@@ -6,14 +6,23 @@
     "author": "Equalis OpsReg Ltd",
     "version": "1.0.0"
   },
+  "parameters": {
+    "equalisOpsRegPrincipalId": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36,
+      "metadata": {
+        "description": "Service Principal Object ID of the Equalis OpsReg connector in your tenant (GUID). Populated automatically by the Equalis onboarding wizard when launching this deployment."
+      }
+    }
+  },
   "variables": {
-    "opsregAppId": "bd96ea0c-27f5-473e-b38b-8422eeb19fab",
     "readerRoleId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
     "securityReaderRoleId": "39bc4728-0917-49c7-9d2c-d95423bc2eb4",
     "costManagementReaderRoleId": "72fafb9e-0641-4937-9268-a91bfd8191a3",
-    "readerAssignmentId": "[guid(subscription().subscriptionId, variables('readerRoleId'), variables('opsregAppId'))]",
-    "securityReaderAssignmentId": "[guid(subscription().subscriptionId, variables('securityReaderRoleId'), variables('opsregAppId'))]",
-    "costReaderAssignmentId": "[guid(subscription().subscriptionId, variables('costManagementReaderRoleId'), variables('opsregAppId'))]"
+    "readerAssignmentId": "[guid(subscription().subscriptionId, variables('readerRoleId'), parameters('equalisOpsRegPrincipalId'))]",
+    "securityReaderAssignmentId": "[guid(subscription().subscriptionId, variables('securityReaderRoleId'), parameters('equalisOpsRegPrincipalId'))]",
+    "costReaderAssignmentId": "[guid(subscription().subscriptionId, variables('costManagementReaderRoleId'), parameters('equalisOpsRegPrincipalId'))]"
   },
   "resources": [
     {
@@ -22,7 +31,7 @@
       "name": "[variables('readerAssignmentId')]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('readerRoleId'))]",
-        "principalId": "[variables('opsregAppId')]",
+        "principalId": "[parameters('equalisOpsRegPrincipalId')]",
         "principalType": "ServicePrincipal",
         "description": "Equalis OpsReg — Reader access for compliance scanning via Azure Resource Graph"
       }
@@ -33,7 +42,7 @@
       "name": "[variables('securityReaderAssignmentId')]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('securityReaderRoleId'))]",
-        "principalId": "[variables('opsregAppId')]",
+        "principalId": "[parameters('equalisOpsRegPrincipalId')]",
         "principalType": "ServicePrincipal",
         "description": "Equalis OpsReg — Security Reader for Microsoft Defender for Cloud posture data"
       }
@@ -44,7 +53,7 @@
       "name": "[variables('costReaderAssignmentId')]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('costManagementReaderRoleId'))]",
-        "principalId": "[variables('opsregAppId')]",
+        "principalId": "[parameters('equalisOpsRegPrincipalId')]",
         "principalType": "ServicePrincipal",
         "description": "Equalis OpsReg — Cost Management Reader for FinOps spend analysis"
       }
